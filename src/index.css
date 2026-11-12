@@ -47,12 +47,13 @@ body {
   margin-top: 30px;
 }
 
-.movie-card {
-  background-color: #191c28;
-  border: 1px solid #303443;
-  border-radius: 12px;
-  padding: 25px;
-  transition: transform 0.2s;
+.movie-card .movie-poster {
+  display: block;
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 16px;
 }
 
 .movie-card:hover {
@@ -63,6 +64,7 @@ body {
   color: #a99cff;
   font-size: 20px;
   margin-bottom: 15px;
+  padding-top: 35px;
 }
 
 .movie-card p {
@@ -108,6 +110,82 @@ body {
 .no-results {
   margin-top: 25px;
   color: #ff8b8b;
+}
+
+.movie-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.wishlist-filter,
+.memo-toggle {
+  border: 1px solid #303443;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #191c28;
+  color: #c4c6d1;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.wishlist-filter span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 21px;
+  height: 21px;
+  margin-left: 8px;
+  border-radius: 12px;
+  background: #303443;
+  color: #d7d2ff;
+  font-size: 12px;
+}
+
+.wishlist-filter.selected,
+.wishlist-button.saved {
+  color: #ff9cbd;
+  border-color: #6b3d57;
+}
+
+.memo-demo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #a6a8b5;
+  font-size: 13px;
+}
+
+.memo-toggle.enabled {
+  color: #d3ccff;
+  border-color: #7568d6;
+}
+
+.memo-explanation {
+  margin-top: 9px;
+  font-size: 13px;
+}
+
+.wishlist-button {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  margin: 0;
+  padding: 7px 9px;
+  border: 1px solid #303443;
+  border-radius: 7px;
+  background: #222534;
+  color: #c4c6d1;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.wishlist-button:hover,
+.wishlist-filter:hover,
+.memo-toggle:hover {
+  border-color: #8b7cff;
 }
 
 
@@ -159,4 +237,24 @@ body {
 .sort-filter option {
   background-color: #191c28;
   color: white;
+}
+.rerender-button {
+  padding: 10px 14px;
+  border: 1px solid #8b7cff;
+  border-radius: 8px;
+  background-color: #191c28;
+  color: #d3ccff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.rerender-button:hover {
+  background-color: #29263f;
+  transform: translateY(-1px);
+}
+
+.rerender-button:focus-visible {
+  outline: 2px solid #b7adff;
+  outline-offset: 2px;
 }

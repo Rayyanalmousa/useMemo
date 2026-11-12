@@ -1,41 +1,63 @@
-# Movie Explorer
+🎬 MOVIE EXPLORER
+=================
 
-A React movie finder with search, genre filters, sorting, and a wishlist saved in your browser. The wishlist and the `useMemo` comparison are included to support the React Hooks project brief.
+🌟 ABOUT THIS PROJECT
+Movie Explorer is a beginner React app for browsing a small movie collection. It demonstrates React state, reusable components, browser local storage, and the assigned Hook: useMemo.
 
-## Run it
+✨ FEATURES
+• 🔎 Search movies by title.
+• 🎭 Filter movies by genre.
+• ↕️ Sort by rating, release year, or title.
+• ❤️ Add and remove movies from a personal wishlist.
+• 💾 Keep wishlist choices after a refresh with browser localStorage.
+• 🖼️ Show movie posters using image links in the movie data.
+• 🔁 Switch between useMemo ON and OFF to compare the same movie calculation.
+• 🧪 Use the “Re-render demo” button to trigger an unrelated render for the console demonstration.
 
-1. Unzip the project and open a terminal in the folder containing `package.json`.
-2. Run `npm install`.
-3. Run `npm run dev` and open the local address Vite prints.
+🧠 HOW useMemo IS USED
+The app filters movies by title, genre, and (when selected) wishlist membership, then sorts the matching movies. This calculation lives in getVisibleMovies() in src/components/MovieList.jsx.
 
-If npm reports `ENOENT` for `package.json`, the terminal is in the wrong folder. Change into the extracted `useMemo` folder first.
+When useMemo is ON, MemoizedMovieList wraps that calculation in useMemo. React can reuse the previous filtered and sorted movie array while its dependencies stay the same: movies, search, selectedGenre, sortBy, wishlist, and showWishlistOnly.
 
-## Wishlist
+When useMemo is OFF, UnmemoizedMovieList runs getVisibleMovies() again each time that component renders. Both modes should display the same movies; the difference is whether React can reuse the calculation result.
 
-Use **Add to wishlist** on a movie card, then choose **My wishlist** to show saved movies. The app saves movie IDs in browser `localStorage` under `movie-explorer-wishlist`. Refreshing the page keeps the list. The saved list is local to that browser and device.
+The “Re-render demo” button changes demoCount in src/App.jsx. That causes the app and results component to render again without changing the movie filters. With useMemo ON, the component can render while the calculation is reused. With useMemo OFF, the calculation runs again.
 
-## How the `useMemo` demo works
+To show this in class:
+1. Open the browser developer tools and select the Console tab.
+2. Turn useMemo ON and clear the console.
+3. Click “Re-render demo” a few times. Look for “Calculation ran: useMemo ON”.
+4. Turn useMemo OFF, clear the console, and click the demo button again. Look for “Calculation ran: useMemo OFF” each time.
+5. Explain that typing in search changes a dependency, so both modes must recalculate the list for the new search text.
 
-The app filters movies by title, genre, and (optionally) wishlist membership, then sorts the result. The **Compare useMemo** button switches between two small result components:
+The console.log messages are demonstrations. The app still needs to calculate the list when a relevant input changes. With only eight sample movies, this project is not expected to show a noticeable speed improvement. useMemo is most useful when a calculation is costly enough for avoiding repeated work to matter.
 
-- `MemoizedMovieList` uses `useMemo` to reuse the filtered and sorted array while its inputs are unchanged.
-- `UnmemoizedMovieList` performs the same calculation on every render.
+💾 HOW THE WISHLIST WORKS
+The wishlist is an array of movie IDs held in React state in src/App.jsx. When the app starts, it reads the saved IDs from localStorage using the key “movie-explorer-wishlist”. A React effect writes the updated list back to localStorage whenever the wishlist changes. This keeps saved movies in the same browser on the same device. If browser storage is unavailable or contains invalid data, the app falls back to an empty wishlist.
 
-The displayed movies should be the same in both modes. Search, genre, sorting, and wishlist changes update the dependency values and recalculate the list. With only eight sample movies, either version is fast; the demo is for understanding the Hook. In a real app, measure first and use memoization only when it helps. React Strict Mode may call render calculations more than once in development, so the calculation stays pure.
+🗂️ PROJECT FILES
+• src/App.jsx - app state, search/filter/sort controls, wishlist storage, and demo buttons
+• src/components/MovieList.jsx - shared filter/sort calculation and memoized/plain versions
+• src/components/MovieCard.jsx - movie details, poster, and wishlist button
+• src/components/SearchBar.jsx - title search input
+• src/components/FilterBar.jsx - genre selector
+• src/components/SortBar.jsx - sort selector
+• src/data/movies.js - sample movie data and poster URLs
+• src/index.css - page and component styling
+• src/main.jsx - React entry point
 
-## Code map
+▶️ HOW TO RUN THE PROJECT
+1. Install Node.js and npm.
+2. Unzip the project.
+3. Open a terminal in the folder that contains package.json.
+4. Run: npm install
+5. Run: npm run dev
+6. Open the local address shown in the terminal.
 
-- `src/App.jsx` - app state, controls, and localStorage read/write
-- `src/components/MovieList.jsx` - shared filter/sort calculation and memoized/plain versions
-- `src/components/MovieCard.jsx` - movie details and wishlist button
-- `src/components/SearchBar.jsx`, `FilterBar.jsx`, `SortBar.jsx` - existing controls
-- `src/data/movies.js` - sample movies
-- `src/index.css` - existing styles plus wishlist and demo controls
+If npm reports ENOENT for package.json, the terminal is in the wrong folder. Change to the extracted project folder first. Stop the development server with Ctrl+C.
 
-## Short presentation outline
+🌐 IMAGE NOTE
+Movie poster links load from the internet, so the browser must be online to display them. Poster artwork is from TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB.
 
-1. Explain that `useMemo` caches a calculation result until one of its dependencies changes.
-2. Demonstrate searching, filtering by genre, sorting, and saving movies.
-3. Explain that wishlist IDs are read from and written to `localStorage` so they remain after refresh.
-4. Toggle **Compare useMemo** and describe the same output with and without cached calculation results.
-5. Explain the tradeoff: memoization can skip repeated expensive work, but adds complexity and is unnecessary for tiny, already-fast calculations.
+🎤 PRESENTATION SUMMARY
+“Movie Explorer lets users search, filter, sort, and save movies. useMemo caches the filtered and sorted movie list until one of its dependencies changes. The on/off switch compares that with recalculating on each render. The wishlist uses localStorage so saved movie IDs remain after a page refresh.”

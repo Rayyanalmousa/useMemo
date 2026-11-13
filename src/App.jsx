@@ -1,8 +1,7 @@
-
 import { useEffect, useState } from "react";
 
 import movies from "./data/movies";
-import {
+import MovieList, {
   MemoizedMovieList,
   UnmemoizedMovieList,
 } from "./components/MovieList";
@@ -14,22 +13,15 @@ function App() {
   const [search, setSearch] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [sortBy, setSortBy] = useState("default");
-
   const [wishlist, setWishlist] = useState(() => {
     try {
-      const savedWishlist = window.localStorage.getItem(
-        "movie-explorer-wishlist"
-      );
-      const parsedWishlist = savedWishlist
-        ? JSON.parse(savedWishlist)
-        : [];
-
+      const savedWishlist = window.localStorage.getItem("movie-explorer-wishlist");
+      const parsedWishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
       return Array.isArray(parsedWishlist) ? parsedWishlist : [];
     } catch {
       return [];
     }
   });
-
   const [showWishlistOnly, setShowWishlistOnly] = useState(false);
   const [useMemoEnabled, setUseMemoEnabled] = useState(true);
 
@@ -37,18 +29,17 @@ function App() {
     try {
       window.localStorage.setItem(
         "movie-explorer-wishlist",
-        JSON.stringify(wishlist)
+        JSON.stringify(wishlist),
       );
     } catch {
+      
     }
   }, [wishlist]);
 
   function toggleWishlist(movieId) {
-    setWishlist((currentWishlist) =>
-      currentWishlist.includes(movieId)
-        ? currentWishlist.filter((id) => id !== movieId)
-        : [...currentWishlist, movieId]
-    );
+    setWishlist((currentWishlist) => currentWishlist.includes(movieId)
+      ? currentWishlist.filter((id) => id !== movieId)
+      : [...currentWishlist, movieId]);
   }
 
   const resultsProps = {
@@ -95,7 +86,6 @@ function App() {
         </div>
 
         <div className="movie-options">
-
           <button
             type="button"
             className={`wishlist-filter ${showWishlistOnly ? "selected" : ""}`}
@@ -108,32 +98,31 @@ function App() {
 
           <div className="memo-demo">
             <span>Compare useMemo</span>
-
             <button
               type="button"
               className={`memo-toggle ${useMemoEnabled ? "enabled" : ""}`}
               onClick={() => setUseMemoEnabled((enabled) => !enabled)}
               aria-pressed={useMemoEnabled}
+              aria-label={`useMemo ${useMemoEnabled ? "on" : "off"}; click to switch`}
             >
-              useMemo {useMemoEnabled ? "ON" : "OFF"}
+              useMemo {useMemoEnabled ? "on" : "off"}
             </button>
+           
           </div>
-
         </div>
 
         <p className="memo-explanation" aria-live="polite">
           {useMemoEnabled
-            ? "ON: React can reuse the filtered and sorted list while its inputs stay the same."
-            : "OFF: Filtering and sorting run again whenever the component renders."}
+            ? "On: changing sort order reuses the average rating because the movie set stays the same."
+            : "Off: the average rating is recalculated whenever the list updates."}
         </p>
 
-        {useMemoEnabled ? (
-          <MemoizedMovieList {...resultsProps} />
-        ) : (
-          <UnmemoizedMovieList {...resultsProps} />
-        )}
+        {useMemoEnabled
+          ? <MemoizedMovieList {...resultsProps} />
+          : <UnmemoizedMovieList {...resultsProps} />}
 
       </main>
+
     </div>
   );
 }

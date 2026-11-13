@@ -11,33 +11,32 @@ Movie Explorer is a beginner React app for browsing a small movie collection. It
 • ❤️ Add and remove movies from a personal wishlist.
 • 💾 Keep wishlist choices after a refresh with browser localStorage.
 • 🖼️ Show movie posters using image links in the movie data.
-• 🔁 Switch between useMemo ON and OFF to compare the same movie calculation.
-• 🧪 Use the “Re-render demo” button to trigger an unrelated render for the console demonstration.
+• 🔁 Switch between useMemo ON and OFF to compare the calculations.
+• ⭐ Show the average rating of the currently visible movies.
 
 🧠 HOW useMemo IS USED
-The app filters movies by title, genre, and (when selected) wishlist membership, then sorts the matching movies. This calculation lives in getVisibleMovies() in src/components/MovieList.jsx.
+The app first filters movies by title, genre, and (when selected) wishlist membership using getFilteredMovies() in src/components/MovieList.jsx. It sorts that filtered list separately with sortMovies().
 
-When useMemo is ON, MemoizedMovieList wraps that calculation in useMemo. React can reuse the previous filtered and sorted movie array while its dependencies stay the same: movies, search, selectedGenre, sortBy, wishlist, and showWishlistOnly.
+When useMemo is ON, MemoizedMovieList uses one useMemo for filtering and another for sorting. Filtering depends on movies, search, selectedGenre, wishlist, and showWishlistOnly. Sorting depends on the filtered list and sortBy.
 
-When useMemo is OFF, UnmemoizedMovieList runs getVisibleMovies() again each time that component renders. Both modes should display the same movies; the difference is whether React can reuse the calculation result.
+The app also calculates the average rating of the filtered movies with getAverageRating(). A separate useMemo caches this average using filteredMovies as its dependency. Changing sort order only rearranges those movies, so it does not change their average.
 
-The “Re-render demo” button changes demoCount in src/App.jsx. That causes the app and results component to render again without changing the movie filters. With useMemo ON, the component can render while the calculation is reused. With useMemo OFF, the calculation runs again.
+When useMemo is OFF, UnmemoizedMovieList runs both calculations again whenever the component renders. Both modes should display the same visible movies and average; the difference is whether React can reuse the calculation results.
 
-To show this in class:
-1. Open the browser developer tools and select the Console tab.
-2. Turn useMemo ON and clear the console.
-3. Click “Re-render demo” a few times. Look for “Calculation ran: useMemo ON”.
-4. Turn useMemo OFF, clear the console, and click the demo button again. Look for “Calculation ran: useMemo OFF” each time.
-5. Explain that typing in search changes a dependency, so both modes must recalculate the list for the new search text.
+To compare the rating calculation on the page:
+1. Turn useMemo ON. The rating summary shows the current average and a status message.
+2. Change the sort order. The cards reorder, but the message says “Cached average reused — sorting changed only.” Sorting changes order, not which ratings are included.
+3. Turn useMemo OFF and change the sort order again. The message says “Average recalculated — useMemo is off.”
+4. Change the search or genre. The filtered movie set changes, so the average is recalculated in both modes.
 
-The console.log messages are demonstrations. The app still needs to calculate the list when a relevant input changes. With only eight sample movies, this project is not expected to show a noticeable speed improvement. useMemo is most useful when a calculation is costly enough for avoiding repeated work to matter.
+With only eight sample movies, this project is not expected to show a noticeable speed improvement. The page status demonstrates when the memoized value is reused; useMemo is most useful when a calculation is costly enough for avoiding repeated work to matter.
 
 💾 HOW THE WISHLIST WORKS
 The wishlist is an array of movie IDs held in React state in src/App.jsx. When the app starts, it reads the saved IDs from localStorage using the key “movie-explorer-wishlist”. A React effect writes the updated list back to localStorage whenever the wishlist changes. This keeps saved movies in the same browser on the same device. If browser storage is unavailable or contains invalid data, the app falls back to an empty wishlist.
 
 🗂️ PROJECT FILES
-• src/App.jsx - app state, search/filter/sort controls, wishlist storage, and demo buttons
-• src/components/MovieList.jsx - shared filter/sort calculation and memoized/plain versions
+• src/App.jsx - app state, search/filter/sort controls, wishlist storage, and useMemo comparison toggle
+• src/components/MovieList.jsx - filter/sort calculation, average-rating calculation, and memoized/plain versions
 • src/components/MovieCard.jsx - movie details, poster, and wishlist button
 • src/components/SearchBar.jsx - title search input
 • src/components/FilterBar.jsx - genre selector
@@ -60,4 +59,4 @@ If npm reports ENOENT for package.json, the terminal is in the wrong folder. Cha
 Movie poster links load from the internet, so the browser must be online to display them. Poster artwork is from TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB.
 
 🎤 PRESENTATION SUMMARY
-“Movie Explorer lets users search, filter, sort, and save movies. useMemo caches the filtered and sorted movie list until one of its dependencies changes. The on/off switch compares that with recalculating on each render. The wishlist uses localStorage so saved movie IDs remain after a page refresh.”
+"Movie Explorer lets users search, filter, sort, and save movies. It also shows the average rating of the movies currently visible. With useMemo on, React can reuse the filtered list and its average rating until their inputs change. The wishlist uses localStorage so saved movie IDs remain after a page refresh."

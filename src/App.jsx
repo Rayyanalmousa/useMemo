@@ -33,7 +33,7 @@ function App() {
         JSON.stringify(wishlist),
       );
     } catch {
-      // The wishlist still works for this visit if browser storage is unavailable.
+      
     }
   }, [wishlist]);
 
